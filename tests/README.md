@@ -17,7 +17,6 @@ writing we are running version 8.5.13. Support for this has been built into the
 via [Composer](https://getcomposer.org/) if you don't already have it installed globally.
 
 	> composer install
-
 If running under OS X or Linux, you can create a symbolic link to make running tests a touch nicer.
 
 	> ln -s ./vendor/bin/phpunit ./phpunit

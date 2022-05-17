@@ -56,7 +56,7 @@ article
 </main>
 
 <footer>
-    <p class="text-center">&copy; 2020 My recipe website</p>
+    <p class="text-center">&copy; <?= date('Y') ?> My recipe website</p>
 </footer>
 
 </body>

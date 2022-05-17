@@ -16,16 +16,12 @@ if (file_exists(SYSTEMPATH . 'Config/Routes.php')) {
  * Router Setup
  * --------------------------------------------------------------------
  */
-
-
 $routes->setDefaultNamespace('App\Controllers');
-// Set the default controller
-$routes->setDefaultController('RecipesController');
-
+$routes->setDefaultController('Home');
 $routes->setDefaultMethod('index');
 $routes->setTranslateURIDashes(false);
 $routes->set404Override();
-$routes->setAutoRoute(false); // // Disabling AutoRoute
+$routes->setAutoRoute(false);
 
 /*
  * --------------------------------------------------------------------
@@ -35,7 +31,7 @@ $routes->setAutoRoute(false); // // Disabling AutoRoute
 
 // We get a performance increase by specifying the default
 // route since we don't have to scan directories.
-$routes->get('/', 'RecipesController::index');
+$routes->get('/', 'Home::index');
 
 /*
  * --------------------------------------------------------------------

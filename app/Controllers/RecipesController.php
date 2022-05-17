@@ -10,7 +10,7 @@ class RecipesController extends BaseController
         $data = [
             'page_title' => "My Recipes",
             'page_subtitle' => "I present you my favorite recipes...",
-            'recipes' => $this->_dummy_data(),
+            'recipes' => $this->dummyData(),
         ];
 
         /* Each of the items in the $data array will be accessible
@@ -23,7 +23,7 @@ class RecipesController extends BaseController
     /**
      * Dummy data because we don't have a model and a database yet.
      */
-    private function _dummy_data ()
+    private function dummyData ()
     {
         return [
             [
