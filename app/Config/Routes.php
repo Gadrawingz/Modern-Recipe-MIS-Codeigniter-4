@@ -32,6 +32,8 @@ $routes->setAutoRoute(false);
 // We get a performance increase by specifying the default
 // route since we don't have to scan directories.
 $routes->get('/', 'Home::index');
+$routes->get('/recipes', 'RecipesController::index');
+$routes->get('/recipes_static', 'RecipesController::staticData');
 
 /*
  * --------------------------------------------------------------------
