@@ -1,3 +1,11 @@
+<?php
+/**
+ * @var string $page_title           The page title (automatically created by CI from the $data array)
+ * @var string $page_subtitle        The page subtitle (automatically created by CI from the $data array)
+ * @var array  $recipes              List of recipes (automatically created by CI from the $data array)
+ * @var App\Entities\Recipe $recipe  One recipe (created by the foreach instruction)
+ */
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -29,34 +37,34 @@ article
 <main role="main" class="container">
     <div class="title">
         <h1>
-            <?= esc($page_title) ?>
-            <small class="text-muted"><?= esc($page_subtitle) ?></small>
-        </h1>
+          <?= esc($page_title) ?>
+          <small class="text-muted"><?= esc($page_subtitle) ?></small>
+      </h1>
     </div>
 
     <div class="container">
 
+    <h3>List of recipe by id</h3>
+    <ul>
 <?php foreach ($recipes as $recipe): ?>
-        <article>
-            <h3><?= esc($recipe['title']) ?></h3>
-            <h5>Ingredients</h5>
-            <ul>
-            <?php foreach ($recipe['ingredients'] as $ingredient): ?>
-                <li><?= esc($ingredient) ?></li>
-            <?php endforeach; ?>
-            </ul>
-            <h5>Instructions</h5>
-            <p><?= esc($recipe['instructions']) ?></p>
-        </article>
-        <hr>
+          <li><?= anchor('recipe/' . $recipe->id, $recipe->title) ?></li>
 <?php endforeach; ?>
+    </ul>
+
+    <h3>List of recipe by slug</h3>
+    <ul>
+<?php foreach ($recipes as $recipe): ?>
+          <li><?= anchor('recipe/' . $recipe->slug, $recipe->title) ?></li>
+<?php endforeach; ?>
+    </ul>
 
     </div>
 
 </main>
 
+
 <footer>
-    <p class="text-center">&copy; <?= date('Y') ?> My recipe website</p>
+    <p class="text-center">&copy; 2020 My recipe website</p>
 </footer>
 
 </body>

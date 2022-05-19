@@ -20,20 +20,18 @@ class Pager extends BaseConfig
      *
      * @var array<string, string>
      */
+
+    
+
+    // Pagination template aliases
     public $templates = [
+        // Default templates provided with CodeIgniter
         'default_full'   => 'CodeIgniter\Pager\Views\default_full',
         'default_simple' => 'CodeIgniter\Pager\Views\default_simple',
-        'default_head'   => 'CodeIgniter\Pager\Views\default_head',
+        // Custom template to use Bootstrap
+        'bootstrap'      => 'App\Views\pagination_bootstrap',
     ];
 
-    /**
-     * --------------------------------------------------------------------------
-     * Items Per Page
-     * --------------------------------------------------------------------------
-     *
-     * The default number of results shown in a single page.
-     *
-     * @var int
-     */
-    public $perPage = 20;
+    // Default value for the number of item per page
+    public $perPage = 25;
 }

@@ -1,10 +1,13 @@
-<?php
+<?php namespace App\Controllers;
 
-namespace App\Controllers;
+use App\Libraries\MyRecipes;
 
 class RecipesController extends BaseController
 {
-
+    /**
+     * List of recipes
+     * @return string
+     */
     public function index()
     {
         // Create an instance of our library
@@ -12,36 +15,68 @@ class RecipesController extends BaseController
 
         // Collect all the data used by the view in a $data array
         $data = [
-            'page_title' => "Our Recipes",
-            'page_subtitle' => "Here are our favorite recipes...",
-            'recipes' => $myRecipes->getAllRecipes(),
+            'page_title' => "My Recipes",
+            'page_subtitle' => "I present you my favorite recipes...",
+            'recipes' => $myRecipes->getListRecipes(),
+            // Pass the paginnation class instance to the view
+            'pager' => $myRecipes->recipeModel->pager,
         ];
 
         /* Each of the items in the $data array will be accessible
          * in the view by variables with the same name as the key:
-         * $page_title, $page_subtitle and $recipes
+         * $page_title, $page_subtitle, $recipes and $pager
          */
         return view('recipe_list', $data);
     }
 
-    public function staticData()
+    /**
+     * One recipe
+     * @param int $id
+     * @return string
+     */
+    public function recipeById (int $id)
     {
-        // Collect all the data used by the view in a $data array
-        $data = [
-            'page_title' => "Our Recipes",
-            'page_subtitle' => "Here are our favorite recipes...",
-            'recipes' => $this->dummyData(),
-        ];
+        // Create an instance of our library
+        $myRecipes = new MyRecipes();
 
-        /* Each of the items in the $data array will be accessible
-         * in the view by variables with the same name as the key:
-         * $page_title, $page_subtitle and $recipes
+        $data = [];
+
+        /* Get the recipe for the id received in parameter.
+         * If the recipe does not exist, throw a page not found exception (error 404)
          */
-        return view('recipe_list', $data);
+        if ( ! $data['recipe'] = $myRecipes->getRecipeById($id))
+        {
+            throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
+        }
+
+        return view('recipe', $data);
+    }
+
+    /**
+     * One recipe
+     * @param string $slug
+     * @return string
+     */
+    public function recipeBySlug (string $slug)
+    {
+        // Create an instance of our library
+        $myRecipes = new MyRecipes();
+
+        $data = [];
+
+        /* Get the recipe for the slug received in parameter.
+         * If the recipe does not exist, throw a page not found exception (error 404)
+         */
+        if ( ! $data['recipe'] = $myRecipes->getRecipeBySlug($slug))
+        {
+            throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
+        }
+
+        return view('recipe', $data);
     }
 
 
-
+    
 
     /**
      * Dummy data because we don't have a model and a database yet.

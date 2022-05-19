@@ -24,7 +24,7 @@ class App extends BaseConfig
      * @var string
      */
     // public $baseURL = 'http://recipe.blog:8888/';
-    public $baseURL = 'http://localhost/CodeIgniter/CI4/modern-recipe-mis';
+    public $baseURL = 'http://localhost/CodeIgniter/CI4/modern-recipe-mis/public/';
     // public $baseURL = 'http://localhost:8080/';
 
     /**
