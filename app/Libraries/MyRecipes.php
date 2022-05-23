@@ -5,72 +5,57 @@ use App\Models\IngredientModel;
 
 class MyRecipes
 {
-    /**
-     * Get all recipes
-     * @return array
-     */
-    public function getAllRecipes ()
+    public $recipeModel;
+    public $ingredientModel;
+
+    public function __construct()
     {
-        // Create an instance for our two models
-        $recipeModel = new RecipeModel();
-        $ingredientModel = new IngredientModel();
-
-        // SELECT the recipes, order by id
-        $recipes = $recipeModel
-            ->orderBy('id')
-            ->findAll();
-
-        // For each recipe, SELECT its ingredients
-        foreach ($recipes as &$recipe)
-        {
-            $recipe->ingredients = $ingredientModel
-                ->where( ['recipe_id' => $recipe->id] )
-                ->orderBy('id')
-                ->findAll();
-        }
-        unset($recipe);
-
-        return $recipes;
+        $this->recipeModel = new RecipeModel();
+        $this->ingredientModel = new IngredientModel();
     }
-
 
     /**
      * Get the list of recipes
+     * @param array $search
      * @return array
      */
-    public function getListRecipes ()
+    public function getListRecipes (array $search)
     {
-        $recipeModel = new RecipeModel();
-
         // Only get id, slug and title fields
-        $recipes = $recipeModel
-            ->select('id, slug, title')
+        $this->recipeModel->select('id, slug, title');
+
+        // If we do a text search, look in the title and instructions
+        if ( ! empty($search['text']))
+        {
+            $this->recipeModel
+                ->like('title', $search['text'])
+                ->orLike('instructions', $search['text']);
+        }
+
+        // If we don't ask for a specific number of recipe per page, get the default value
+        $nb_per_page = ! empty($search['nb_per_page']) ? $search['nb_per_page'] : null;
+
+        // Add the sort order and pagination, then return the results
+        $recipes = $this->recipeModel
             ->orderBy('id')
-            ->findAll();
+            ->paginate($nb_per_page);
 
         return $recipes;
     }
-
-
-
 
     /**
      * Get a recipe by its id
      * @param int $id
      * @return object|NULL
      */
-
     public function getRecipeById (int $id)
     {
-        $recipeModel = new RecipeModel();
-        $ingredientModel = new IngredientModel();
-
         // Get the recipe by its id
-        $recipe = $recipeModel->find($id);
+        $recipe = $this->recipeModel->find($id);
 
         if ($recipe !== null)
         {
-            $recipe->ingredients = $ingredientModel
+            $recipe->ingredients = $this->ingredientModel
                 ->where( ['recipe_id' => $recipe->id] )
                 ->orderBy('id')
                 ->findAll();
@@ -79,7 +64,6 @@ class MyRecipes
         return $recipe;
     }
 
-
     /**
      * Get a recipe by its slug
      * @param string $slug
@@ -87,15 +71,12 @@ class MyRecipes
      */
     public function getRecipeBySlug (string $slug)
     {
-        $recipeModel = new RecipeModel();
-        $ingredientModel = new IngredientModel();
-
         // Get the recipe by its slug
-        $recipe = $recipeModel->where('slug', $slug)->first();
+        $recipe = $this->recipeModel->where('slug', $slug)->first();
 
         if ($recipe !== null)
         {
-            $recipe->ingredients = $ingredientModel
+            $recipe->ingredients = $this->ingredientModel
                 ->where( ['recipe_id' => $recipe->id] )
                 ->orderBy('id')
                 ->findAll();
