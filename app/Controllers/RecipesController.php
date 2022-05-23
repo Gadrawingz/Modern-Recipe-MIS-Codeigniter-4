@@ -10,6 +10,51 @@ class RecipesController extends BaseController
      */
     public function index()
     {
+        // If a form was submitted
+        if ($this->request->getMethod() === 'post')
+        {
+            // Get the form's search criteria
+            $search = [
+                'text' => $this->request->getPost('search_text'),
+                'nb_per_page' => $this->request->getPost('search_nb_per_page'),
+            ];
+        }
+        // Else, if search criteria have been saved to the session data
+        else if (session('search_recipe') !== null)
+        {
+            // Get the search criteria from the session data
+            $search = session('search_recipe');
+        }
+        else
+        {
+            // Default search criteria
+            $search = [
+                'text' => null,
+                'nb_per_page' => null,
+            ];
+        }
+
+        if ($search['nb_per_page'] !== null)
+        {
+            // Convert the value to 'int' (integer)
+            $search['nb_per_page'] = (int)$search['nb_per_page'];
+
+            // If negative or 0, set to null to get the default value from the Pager's configuration
+            if ($search['nb_per_page'] <= 0)
+            {
+                $search['nb_per_page'] = null;
+            }
+
+            // No more than 100 recipes per page
+            if ($search['nb_per_page'] > 100)
+            {
+                $search['nb_per_page'] = 100;
+            }
+        }
+
+        // Save the search criteria to the session data
+        session()->set('search_recipe', $search);
+
         // Create an instance of our library
         $myRecipes = new MyRecipes();
 
@@ -17,14 +62,19 @@ class RecipesController extends BaseController
         $data = [
             'page_title' => "My Recipes",
             'page_subtitle' => "I present you my favorite recipes...",
-            'recipes' => $myRecipes->getListRecipes(),
+            'recipes' => $myRecipes->getListRecipes($search),
+            // Pass the search criteria to the view
+            'search' => $search,
             // Pass the paginnation class instance to the view
             'pager' => $myRecipes->recipeModel->pager,
         ];
 
+        // Load the form helper
+        helper('form');
+
         /* Each of the items in the $data array will be accessible
          * in the view by variables with the same name as the key:
-         * $page_title, $page_subtitle, $recipes and $pager
+         * $page_title, $page_subtitle, $recipes, $search and $pager
          */
         return view('recipe_list', $data);
     }
@@ -73,37 +123,5 @@ class RecipesController extends BaseController
         }
 
         return view('recipe', $data);
-    }
-
-
-    
-
-    /**
-     * Dummy data because we don't have a model and a database yet.
-     */
-    private function dummyData ()
-    {
-        return [
-            [
-                'title' => "Boiling Water",
-                'ingredients' => ["Fresh water"],
-                'instructions' => "Put the water in a cauldron and boil."
-            ],
-            [
-                'title' => "Tea",
-                'ingredients' => ["Fresh water", "Tea bag"],
-                'instructions' => "Prepare the recipe for boiling water. Put the water in a cup, add the tea bag and let it steep for a few minutes."
-            ],
-            [
-                'title' => "Coffee",
-                'ingredients' => ["Fresh water", "Coffee", "Coffeine"],
-                'instructions' => "Prepare Something & something is mixec with anything"
-            ],
-            [
-                'title' => "Glass of water",
-                'ingredients' => ["Fresh water", "Ice cubes", "Lemon slice (optional)"],
-                'instructions' => "Put ice cubes in a tall glass and fill with water. Add a slice of lemon if desired."
-            ],
-        ];
     }
 }
