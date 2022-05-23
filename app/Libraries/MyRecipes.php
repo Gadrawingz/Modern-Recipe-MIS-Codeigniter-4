@@ -31,6 +31,16 @@ class MyRecipes
                 ->like('title', $search['text'])
                 ->orLike('instructions', $search['text']);
         }
+        
+        
+        /*****************************************************************************
+          SELECT `id`, `slug`, `title`
+          FROM `recipe`
+          WHERE `title` LIKE '%bake at 350%' ESCAPE '!'
+          OR `instructions` LIKE '%bake at 350%' ESCAPE '!'
+          ORDER BY `id`
+          LIMIT 10
+        *****************************************************************************/
 
         // If we don't ask for a specific number of recipe per page, get the default value
         $nb_per_page = ! empty($search['nb_per_page']) ? $search['nb_per_page'] : null;
@@ -39,6 +49,8 @@ class MyRecipes
         $recipes = $this->recipeModel
             ->orderBy('id')
             ->paginate($nb_per_page);
+        
+        
 
         return $recipes;
     }
